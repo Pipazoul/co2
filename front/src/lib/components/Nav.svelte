@@ -11,6 +11,7 @@
         <li><a href="/">🏠 Home</a></li>
         <li><a href="/notes">📓 Notes</a></li>
         <li><a href="/time">⌛ Time Tracker</a></li>
+        <li><a href="/co2">💧 Co2</a></li>
         <li on:click={logout}><a>🚪 Logout</a></li>
     {/if}
 

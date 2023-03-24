@@ -2,12 +2,13 @@
 	import LoginModal from "$lib/components/LoginModal.svelte";
     import Nav from "$lib/components/Nav.svelte";
     import "../app.css";
-    import { currentUser, watchUserChange, watchNoteChange} from "$lib/store";
+    import { currentUser, watchUserChange, watchNoteChange, watchTaskChange} from "$lib/store";
 	import { onMount } from "svelte";
 
     onMount(() => {
         watchUserChange();
         watchNoteChange();
+        watchTaskChange();
     });
 
 </script>

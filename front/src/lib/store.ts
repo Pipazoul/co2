@@ -10,6 +10,7 @@ export const currentUser = writable(pb.authStore.model);
 export const currentInstances = writable([]);
 export const currentInstanceTypes = writable([]);
 export const currentNotes = writable([]);
+export const currentTasks = writable([]);
 
 pb.authStore.onChange((user) => {
     currentUser.set(pb.authStore.model);
@@ -46,6 +47,30 @@ export async function watchNoteChange() {
         }
         if (action === "delete") {
             currentNotes.set(get(currentNotes).filter(note => note.id !== record.id));
+        }
+    });
+
+}
+
+export async function watchTaskChange() {
+    const initialTasks = await pb.collection("tasks").getFullList({});
+    currentTasks.set(initialTasks);
+    
+    // subscribe to the task data
+    pb.collection("tasks").subscribe('*', async ({action,  record}) => {
+        if (action === "update") {
+            currentTasks.set(get(currentTasks).map(task => {
+                if (task.id === record.id) {
+                    return record;
+                }
+                return task;
+            }));
+        }
+        if (action === "create") {
+            currentTasks.set([...get(currentTasks), record]);
+        }
+        if (action === "delete") {
+            currentTasks.set(get(currentTasks).filter(task => task.id !== record.id));
         }
     });
 
