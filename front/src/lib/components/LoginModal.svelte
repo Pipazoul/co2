@@ -33,7 +33,7 @@
         <input type="password" placeholder="Password" bind:value={password} class="input input-bordered input-primary w-full max-w-xs" />
 
         <div class="modal-action">
-        <span  for="login" on:click={clickLogin}>Login</span>
+        <button class="btn btn-primary" on:click={clickLogin}>Login</button>
         <label for="login" class="btn">Close</label>
         </div>
     </div>
