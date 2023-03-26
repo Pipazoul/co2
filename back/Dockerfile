@@ -18,4 +18,4 @@ RUN pocketbase migrate --migrationsDir=/pb_migration --dir=/pb_data/
 
 RUN ls -la /pb_data
 
-ENTRYPOINT ["/usr/local/bin/pocketbase", "serve", "--http=0.0.0.0:8900", "--dir=/pb_data", "--migrationsDir=/pb_migration"]
+ENTRYPOINT ["/usr/local/bin/pocketbase", "serve", "--http=0.0.0.0:8900", "--dir=/pb_data", "--migrationsDir=/pb_migrations"]
