@@ -1,10 +1,10 @@
-FROM alpine:3 as downloader
+FROM alpine:latest as downloader
 
 RUN wget https://github.com/pocketbase/pocketbase/releases/download/v0.13.4/pocketbase_0.13.4_linux_amd64.zip \
     && unzip pocketbase_0.13.4_linux_amd64.zip \
     && chmod +x /pocketbase
 
-FROM alpine:3
+FROM alpine:latest
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 EXPOSE 8090
