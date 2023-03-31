@@ -11,6 +11,7 @@ export const currentInstances = writable([]);
 export const currentInstanceTypes = writable([]);
 export const currentNotes = writable([]);
 export const currentTasks = writable([]);
+export const currentFood = writable([]);
 
 pb.authStore.onChange((user) => {
     currentUser.set(pb.authStore.model);
@@ -71,6 +72,30 @@ export async function watchTaskChange() {
         }
         if (action === "delete") {
             currentTasks.set(get(currentTasks).filter(task => task.id !== record.id));
+        }
+    });
+
+}
+
+export async function watchFoodChange() {
+    const initialFood = await pb.collection("food").getFullList({});
+    currentFood.set(initialFood);
+    
+    // subscribe to the food data
+    pb.collection("food").subscribe('*', async ({action,  record}) => {
+        if (action === "update") {
+            currentFood.set(get(currentFood).map(food => {
+                if (food.id === record.id) {
+                    return record;
+                }
+                return food;
+            }));
+        }
+        if (action === "create") {
+            currentFood.set([...get(currentFood), record]);
+        }
+        if (action === "delete") {
+            currentFood.set(get(currentFood).filter(food => food.id !== record.id));
         }
     });
 
