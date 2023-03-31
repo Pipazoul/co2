@@ -46,7 +46,7 @@
 
 
 </script>
-<div class="w-8/12">
+<div class="w-full">
     {#if note}
     <input type="text" bind:value={note.title} on:change={updateNoteTitle(note.title)}/>
     <CodeMirror bind:value on:change={updateNoteContent} lang={markdown()} styles={styles} theme={oneDark}/>

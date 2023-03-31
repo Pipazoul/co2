@@ -8,8 +8,6 @@
     // get all fields in project and group by project in an array
     $: project = [...new Set($currentTasks.map(item => item.project))];
     
-    
-
 
     function startTask(task) {
         task.start = new Date();
@@ -51,6 +49,7 @@
         updateTaskById(task.id, data);
     }
 
+    // check the time passed since start
     function checkPassedTime(task) {
         const now = new Date();
 
@@ -70,6 +69,38 @@
         };
     }
 
+    // Check the total time passed between start and end
+    function checkTotalTime(task) {
+        // convert task.start to date
+        const start = new Date(task.start);
+        // convert task.end to date
+        const end = new Date(task.end);
+        const diff = end - start;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        // Return a string hh:mm
+        return `${hours}h ${minutes}m`;
+    }
+
+    // format date to dd.mm.yy - hh:mm
+    function compactDate(date) {
+        if (!date) return "";
+        // only display and change format dd:mm:yy - hh:mm
+        const d = new Date(date);
+        // slice year to last 2 digits
+        const year = String(d.getFullYear()).slice(-2);
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hour = String(d.getHours()).padStart(2, '0');
+        const minute = String(d.getMinutes()).padStart(2, '0');
+        return `${day}.${month}.${year} - ${hour}:${minute}`;
+
+    }
+
+    // A clock that updates every second
     setInterval(() => {
         $currentTasks.forEach(task => {
             if (task.start && !task.end) {
@@ -81,7 +112,6 @@
     }, 1000);
     
 
-
 </script>
 <div>
     <h1 class="text-3xl font-bold">Time Tracking</h1>
@@ -89,7 +119,7 @@
         <button class="btn" on:click={createTask}> 📝 New Task</button>
     </div>
     <div class="overflow-x-auto">
-        <table class="table w-full">
+        <table class="table table-compact w-full">
           <!-- head -->
           <thead>
             <tr>
@@ -107,11 +137,13 @@
             {#each $currentTasks as task}
                 <tr>
                     <td><input type="text" bind:value={task.name} on:change={() => { updateTaskName(task) }} /></td>
-                    <td>{task.start}</td>
-                    <td>{task.end}</td>
+                
+                    <td>{compactDate(task.start)}</td>
+                    <td>{compactDate(task.end)}</td>
                     <td>
                         <input type="text" bind:value={task.cat} on:change={() => { updateTaskCat(task) }} />
-                        <select bind:value={task.category}>
+                        <br>
+                        <select bind:value={task.cat} on:change={() => { updateTaskCat(task) }} >
                         {#each category as cat}
                             <option value={cat}>{cat}</option>
                         {/each}
@@ -119,7 +151,8 @@
                     </td>
                     <td>
                         <input type="text" bind:value={task.project} on:change={() => { updateTaskProject(task) }} />
-                        <select bind:value={task.project}>
+                        <br>
+                        <select bind:value={task.project} on:change={() => { updateTaskProject(task) }} >
                         {#each project as proj}
                             <option value={proj}>{proj}</option>
                         {/each}
@@ -133,12 +166,20 @@
                             <span style="--value:{task.timer.seconds};"></span>s
                           </span>
                         {/if}
+                        {#if task.start && task.end}
+                            {checkTotalTime(task)}
+                        {/if}
                     </td>
                     <td>
-                        {#if task.start}
-                            <button class="btn" on:click={() => { endTask(task) }}>End</button>
+                        {#if task.start && task.end}
+                            Ended
+                        
                         {:else}
-                            <button class="btn" on:click={() => { startTask(task) }}>Start</button>
+                            {#if task.start}
+                                <button class="btn" on:click={() => { endTask(task) }}>End</button>
+                            {:else}
+                                <button class="btn" on:click={() => { startTask(task) }}>Start</button>
+                            {/if}
                         {/if}
                     </td>
                     <td><span class="cursor-pointer" on:click={() => { deleteTaskById(task.id) }}>🗑️</span></td>
@@ -148,3 +189,10 @@
         </table>
       </div>
 </div>
+
+<style>
+    input {
+        width: fit-content;
+        max-width: 90px;
+    }
+</style>
