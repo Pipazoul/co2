@@ -21,7 +21,7 @@
     <body class="flex w-screen">
         <LoginModal />
         <Nav/>
-        <div class="ml-12">
+        <div class="ml-12 w-full">
             <slot/>
         </div>
     </body>
